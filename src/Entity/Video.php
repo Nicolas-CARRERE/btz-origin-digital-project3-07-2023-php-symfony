@@ -52,6 +52,10 @@ class Video
     #[ORM\OneToMany(mappedBy: 'video', targetEntity: VideoSectionStatic::class, orphanRemoval: true)]
     private Collection $sectionStatics;
 
+    #[ORM\ManyToOne(inversedBy: 'videos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
     public function __construct()
     {
         $this->sectionStatics = new ArrayCollection();
@@ -220,6 +224,18 @@ class Video
                 $sectionStatic->setVideo(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

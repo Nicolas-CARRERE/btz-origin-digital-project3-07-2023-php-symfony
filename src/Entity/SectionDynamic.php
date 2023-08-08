@@ -26,6 +26,10 @@ class SectionDynamic
     #[ORM\Column]
     private ?bool $isGrid = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sectionDynamics')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +79,18 @@ class SectionDynamic
     public function setIsGrid(bool $isGrid): static
     {
         $this->isGrid = $isGrid;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }
