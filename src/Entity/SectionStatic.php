@@ -28,9 +28,13 @@ class SectionStatic
     #[ORM\OneToMany(mappedBy: 'sectionStatic', targetEntity: VideoSectionStatic::class, orphanRemoval: true)]
     private Collection $videos;
 
+    #[ORM\OneToMany(mappedBy: 'sectionStatic', targetEntity: SectionStaticPage::class, orphanRemoval: true)]
+    private Collection $sectionStaticPages;
+
     public function __construct()
     {
         $this->videos = new ArrayCollection();
+        $this->sectionStaticPages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,6 +102,36 @@ class SectionStatic
             // set the owning side to null (unless already changed)
             if ($video->getSectionStatic() === $this) {
                 $video->setSectionStatic(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SectionStaticPage>
+     */
+    public function getSectionStaticPages(): Collection
+    {
+        return $this->sectionStaticPages;
+    }
+
+    public function addSectionStaticPage(SectionStaticPage $sectionStaticPage): static
+    {
+        if (!$this->sectionStaticPages->contains($sectionStaticPage)) {
+            $this->sectionStaticPages->add($sectionStaticPage);
+            $sectionStaticPage->setSectionStatic($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSectionStaticPage(SectionStaticPage $sectionStaticPage): static
+    {
+        if ($this->sectionStaticPages->removeElement($sectionStaticPage)) {
+            // set the owning side to null (unless already changed)
+            if ($sectionStaticPage->getSectionStatic() === $this) {
+                $sectionStaticPage->setSectionStatic(null);
             }
         }
 

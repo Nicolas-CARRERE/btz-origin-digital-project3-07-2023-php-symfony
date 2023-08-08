@@ -23,9 +23,13 @@ class Page
     #[ORM\OneToMany(mappedBy: 'page', targetEntity: AdvertisingPage::class, orphanRemoval: true)]
     private Collection $advertisingPages;
 
+    #[ORM\OneToMany(mappedBy: 'page', targetEntity: SectionStaticPage::class, orphanRemoval: true)]
+    private Collection $sectionStaticPages;
+
     public function __construct()
     {
         $this->advertisingPages = new ArrayCollection();
+        $this->sectionStaticPages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,6 +73,36 @@ class Page
             // set the owning side to null (unless already changed)
             if ($advertisingPage->getPage() === $this) {
                 $advertisingPage->setPage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SectionStaticPage>
+     */
+    public function getSectionStaticPages(): Collection
+    {
+        return $this->sectionStaticPages;
+    }
+
+    public function addSectionStaticPage(SectionStaticPage $sectionStaticPage): static
+    {
+        if (!$this->sectionStaticPages->contains($sectionStaticPage)) {
+            $this->sectionStaticPages->add($sectionStaticPage);
+            $sectionStaticPage->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSectionStaticPage(SectionStaticPage $sectionStaticPage): static
+    {
+        if ($this->sectionStaticPages->removeElement($sectionStaticPage)) {
+            // set the owning side to null (unless already changed)
+            if ($sectionStaticPage->getPage() === $this) {
+                $sectionStaticPage->setPage(null);
             }
         }
 
