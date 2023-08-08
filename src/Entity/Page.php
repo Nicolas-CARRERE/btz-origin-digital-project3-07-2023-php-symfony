@@ -26,10 +26,14 @@ class Page
     #[ORM\OneToMany(mappedBy: 'page', targetEntity: SectionStaticPage::class, orphanRemoval: true)]
     private Collection $sectionStaticPages;
 
+    #[ORM\OneToMany(mappedBy: 'page', targetEntity: SectionDynamicPage::class, orphanRemoval: true)]
+    private Collection $sectionDynamicPages;
+
     public function __construct()
     {
         $this->advertisingPages = new ArrayCollection();
         $this->sectionStaticPages = new ArrayCollection();
+        $this->sectionDynamicPages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,6 +107,36 @@ class Page
             // set the owning side to null (unless already changed)
             if ($sectionStaticPage->getPage() === $this) {
                 $sectionStaticPage->setPage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SectionDynamicPage>
+     */
+    public function getSectionDynamicPages(): Collection
+    {
+        return $this->sectionDynamicPages;
+    }
+
+    public function addSectionDynamicPage(SectionDynamicPage $sectionDynamicPage): static
+    {
+        if (!$this->sectionDynamicPages->contains($sectionDynamicPage)) {
+            $this->sectionDynamicPages->add($sectionDynamicPage);
+            $sectionDynamicPage->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSectionDynamicPage(SectionDynamicPage $sectionDynamicPage): static
+    {
+        if ($this->sectionDynamicPages->removeElement($sectionDynamicPage)) {
+            // set the owning side to null (unless already changed)
+            if ($sectionDynamicPage->getPage() === $this) {
+                $sectionDynamicPage->setPage(null);
             }
         }
 

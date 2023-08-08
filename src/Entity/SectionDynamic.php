@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SectionDynamicRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,14 @@ class SectionDynamic
     #[ORM\ManyToOne(inversedBy: 'sectionDynamics')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\OneToMany(mappedBy: 'sectionDynamic', targetEntity: SectionDynamicPage::class, orphanRemoval: true)]
+    private Collection $sectionDynamicPages;
+
+    public function __construct()
+    {
+        $this->sectionDynamicPages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +101,36 @@ class SectionDynamic
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SectionDynamicPage>
+     */
+    public function getSectionDynamicPages(): Collection
+    {
+        return $this->sectionDynamicPages;
+    }
+
+    public function addSectionDynamicPage(SectionDynamicPage $sectionDynamicPage): static
+    {
+        if (!$this->sectionDynamicPages->contains($sectionDynamicPage)) {
+            $this->sectionDynamicPages->add($sectionDynamicPage);
+            $sectionDynamicPage->setSectionDynamic($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSectionDynamicPage(SectionDynamicPage $sectionDynamicPage): static
+    {
+        if ($this->sectionDynamicPages->removeElement($sectionDynamicPage)) {
+            // set the owning side to null (unless already changed)
+            if ($sectionDynamicPage->getSectionDynamic() === $this) {
+                $sectionDynamicPage->setSectionDynamic(null);
+            }
+        }
 
         return $this;
     }
