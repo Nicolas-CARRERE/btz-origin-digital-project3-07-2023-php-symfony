@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SectionStaticRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,14 @@ class SectionStatic
 
     #[ORM\Column]
     private ?bool $isHero = null;
+
+    #[ORM\OneToMany(mappedBy: 'sectionStatic', targetEntity: VideoSectionStatic::class, orphanRemoval: true)]
+    private Collection $videos;
+
+    public function __construct()
+    {
+        $this->videos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +70,36 @@ class SectionStatic
     public function setIsHero(bool $isHero): static
     {
         $this->isHero = $isHero;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VideoSectionStatic>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(VideoSectionStatic $video): static
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setSectionStatic($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(VideoSectionStatic $video): static
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getSectionStatic() === $this) {
+                $video->setSectionStatic(null);
+            }
+        }
 
         return $this;
     }

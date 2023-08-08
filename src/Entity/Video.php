@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VideoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,6 +48,14 @@ class Video
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $duration = null;
+
+    #[ORM\OneToMany(mappedBy: 'video', targetEntity: VideoSectionStatic::class, orphanRemoval: true)]
+    private Collection $sectionStatics;
+
+    public function __construct()
+    {
+        $this->sectionStatics = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -180,6 +190,36 @@ class Video
     public function setDuration(?\DateTimeInterface $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VideoSectionStatic>
+     */
+    public function getSectionStatics(): Collection
+    {
+        return $this->sectionStatics;
+    }
+
+    public function addSectionStatic(VideoSectionStatic $sectionStatic): static
+    {
+        if (!$this->sectionStatics->contains($sectionStatic)) {
+            $this->sectionStatics->add($sectionStatic);
+            $sectionStatic->setVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSectionStatic(VideoSectionStatic $sectionStatic): static
+    {
+        if ($this->sectionStatics->removeElement($sectionStatic)) {
+            // set the owning side to null (unless already changed)
+            if ($sectionStatic->getVideo() === $this) {
+                $sectionStatic->setVideo(null);
+            }
+        }
 
         return $this;
     }
