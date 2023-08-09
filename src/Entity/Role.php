@@ -43,33 +43,33 @@ class Role
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getRoleUsers(): Collection
-    {
-        return $this->roleUsers;
-    }
+    // /**
+    //  * @return Collection<int, User>
+    //  */
+    // public function getRoleUsers(): Collection
+    // {
+    //     return $this->roleUsers;
+    // }
 
-    public function addRoleUser(User $roleUser): static
-    {
-        if (!$this->roleUsers->contains($roleUser)) {
-            $this->roleUsers->add($roleUser);
-            $roleUser->setUserRoleId($this);
-        }
+    // public function addRoleUser(User $roleUser): static
+    // {
+    //     if (!$this->roleUsers->contains($roleUser)) {
+    //         $this->roleUsers->add($roleUser);
+    //         $roleUser->setUserRoleId($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeRoleUser(User $roleUser): static
-    {
-        if ($this->roleUsers->removeElement($roleUser)) {
-            // set the owning side to null (unless already changed)
-            if ($roleUser->getUserRoleId() === $this) {
-                $roleUser->setUserRoleId(null);
-            }
-        }
+    // public function removeRoleUser(User $roleUser): static
+    // {
+    //     if ($this->roleUsers->removeElement($roleUser)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($roleUser->getUserRoleId() === $this) {
+    //             $roleUser->setUserRoleId(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }
